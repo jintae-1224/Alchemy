@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main_breadscumb%}AUTO TRADING{% endblock %}
+{% block sub_breadscumb_highlight %}바이낸스(선물){% endblock%}
+{% block content %}
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+            <h3>거래화면</h5>
+        </div>
+      </div>
+      <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <!-- Projects table -->
+                <table class="table align-items-center table-flush">
+                  <thead class="thead-black">
+                    <tr>
+                      <th>TICKER</th>
+                      <th>POSITION</th>
+                      <th>현재가</th>
+                      <th>진입가</th>
+                      <th>수익률</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td id="ticker">{{ l.condition_type }}</td>
+                      <td id="position">{{ l.condition_time }}</td>
+                      <td id="now_price">{{ l.buy_money }}</td>
+                      <td id="buy_price">{{ l.condition_name }}</td>
+                      <td id="roe">{{ l.condition_sign }}%</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success mt-5">
+                        거래중지
+                </button>
+            </div>
+            <script>
+            var socket = new WebSocket('ws://localhost:8000/ws/some_url/');
+
+            socket.onmessage = function(event){
+            var data = JSON.parse(event.data);
+            console.log(data);
+            document.querySelector('#ticker').innerText = data.ticker;
+            document.querySelector('#position').innerText = data.position;
+            document.querySelector('#now_price').innerText = data.now_price;
+            document.querySelector('#buy_price').innerText = data.buy_price;
+            document.querySelector('#roe').innerText = data.roe;
+            }
+        </script>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main_breadscumb%}대시보드{% endblock %}
+{% block sub_breadscumb_highlight %}바이낸스(선물){% endblock%}
+{% block content %}
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header border-0">
+        <a href="{% url 'condition_create' %}" class="btn btn-primary btn-sm font-size-12 float-left">
+            조건식 추가
+        </a>
+        <a href="/alchemy/run/{{ l.id }}" class="btn btn-primary btn-sm font-size-12 float-right">
+            거래 시작
+        </a>
+        </div>
+        <div class="table-responsive">
+          <!-- Projects table -->
+          <table class="table align-items-center table-flush">
+            <thead class="thead-black">
+              <tr>
+                <th scope="col">TICKER</th>
+                <th scope="col">POSITION</th>
+                <th scope="col">기준봉</th>
+                <th scope="col">거래금액</th>
+                <th scope="col">조건</th>
+                <th scope="col">부등호</th>
+                <th scope="col">조건값</th>
+                <th scope="col">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for l in list%}
+              <tr>
+                <th scope="row">{{ l.ticker }}</th>
+                <td>{{ l.condition_type }}</td>
+                <td>{{ l.condition_time }}</td>
+                <td>{{ l.buy_money }}</td>
+                <td>{{ l.condition_name }}</td>
+                <td>{{ l.condition_sign }}</td>
+                <td>{{ l.condition_value }}</td>
+                <td>
+                  <form action="/alchemy/delete/{{ l.id }}" method="POST">
+                  {% csrf_token %}
+                    <a href="/alchemy/update/{{ l.id }}" class="btn btn-sm btn-primary">
+                      수정
+                    </a>
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('정말 삭제 하시겠습니까?');">
+                      삭제
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if messages %}
+      {% for message in messages %}
+      <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+        <div class="toast" style="position: absolute; top: 0; right: 0;"  data-delay="5000">
+          <div class="toast-header">
+            <strong class="mr-auto">알림</strong>
+            <small>방금 전</small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="toast-body">
+            {{message}}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      <script>
+        $('.toast').toast('show');
+      </script>
+  {% endif %}
+  {% endblock %}
